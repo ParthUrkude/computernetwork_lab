@@ -1,0 +1,53 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+
+int main() {
+    int sockfd;
+    struct sockaddr_in server_addr;
+    socklen_t len;
+    char buffer[1024];
+
+    // Create UDP socket
+    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+
+    if (sockfd < 0) {
+        perror("Socket creation failed");
+        return 1;
+    }
+
+    // Server address
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(8080);
+    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+    len = sizeof(server_addr);
+
+    // Send message
+    char message[] = "Hello UDP Server!";
+
+    sendto(sockfd, message, strlen(message), 0,
+           (struct sockaddr *)&server_addr, len);
+
+    printf("Message sent to UDP Server!\n");
+
+    // Receive response
+    int n = recvfrom(sockfd, buffer, sizeof(buffer) - 1, 0,
+                     (struct sockaddr *)&server_addr, &len);
+
+    if (n < 0) {
+        perror("Receive failed");
+        close(sockfd);
+        return 1;
+    }
+
+    buffer[n] = '\0';
+    printf("Message from Server: %s\n", buffer);
+
+    close(sockfd);
+
+    return 0;
+}
