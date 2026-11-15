@@ -1,0 +1,39 @@
+
+#include <stdio.h>
+
+int main() {
+    int bucket_size, tokens, packet_size;
+    int token_rate, packets, i;
+
+    printf("Enter bucket capacity: ");
+    scanf("%d", &bucket_size);
+
+    printf("Enter token generation rate: ");
+    scanf("%d", &token_rate);
+
+    printf("Enter number of packets: ");
+    scanf("%d", &packets);
+
+    tokens = bucket_size;
+
+    for (i = 1; i <= packets; i++) {
+        printf("\nEnter packet size: ");
+        scanf("%d", &packet_size);
+
+        if (packet_size <= tokens) {
+            tokens -= packet_size;
+            printf("Packet transmitted successfully.\n");
+        } else {
+            printf("Not enough tokens. Packet waiting/dropped.\n");
+        }
+
+        tokens += token_rate;
+
+        if (tokens > bucket_size)
+            tokens = bucket_size;
+
+        printf("Available tokens: %d\n", tokens);
+    }
+
+    return 0;
+}
