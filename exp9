@@ -1,0 +1,40 @@
+
+#include <stdio.h>
+
+int main() {
+    int bucket_size, output_rate, packets;
+    int incoming, stored = 0, i;
+
+    printf("Enter bucket size: ");
+    scanf("%d", &bucket_size);
+
+    printf("Enter output rate: ");
+    scanf("%d", &output_rate);
+
+    printf("Enter number of packets: ");
+    scanf("%d", &packets);
+
+    for (i = 1; i <= packets; i++) {
+        printf("\nEnter packet size: ");
+        scanf("%d", &incoming);
+
+        if (incoming + stored <= bucket_size) {
+            stored += incoming;
+            printf("Packet accepted.\n");
+        } else {
+            printf("Packet dropped due to overflow!\n");
+        }
+
+        printf("Packets sent: %d\n",
+               stored < output_rate ? stored : output_rate);
+
+        if (stored >= output_rate)
+            stored -= output_rate;
+        else
+            stored = 0;
+
+        printf("Remaining packets: %d\n", stored);
+    }
+
+    return 0;
+}
